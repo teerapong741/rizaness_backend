@@ -7,6 +7,8 @@ import Product from '../models/product';
 import Traffic from '../models/traffic';
 import CartItem from '../models/cartitem';
 import ImageUrl from '../models/imageurl';
+import StatusProduct from '../models/statusproduct';
+import StatusShow from '../models/statusshow';
 
 const Mutation = {
 	signup: async (parent, args, context, info) => {
@@ -240,7 +242,17 @@ const Mutation = {
 		return deletedAddress;
 	},
 	addProduct: async (parent, args, { userId }, info) => {
-		const { name, type, description, price, discountType, disconst } = args;
+		const {
+			name,
+			type,
+			description,
+			price,
+			discountType,
+			disconst,
+			status_show,
+			status_product,
+			SKU
+		} = args;
 
 		// เช็คว่ามี user หรือไม่
 		if (!userId) throw new Error('Please log in.');
@@ -278,7 +290,18 @@ const Mutation = {
 			});
 	},
 	updateProduct: async (parent, args, { userId }, info) => {
-		const { id, name, type, description, price, discountType, discount } = args;
+		const {
+			id,
+			name,
+			type,
+			description,
+			price,
+			discountType,
+			discount,
+			status_show,
+			status_product,
+			SKU
+		} = args;
 
 		// เช็คว่ามี user หรือไม่
 		if (!userId) throw new Error('Please log in.');
@@ -300,7 +323,12 @@ const Mutation = {
 			description: !!description ? description : productId.description,
 			price: !!price ? price : productId.price,
 			discountType: !!discountType ? discountType : productId.discountType,
-			discount: !!discount ? discount : productId.disconst
+			discount: !!discount ? discount : productId.disconst,
+			status_show: !!status_show ? status_show : productId.status_show,
+			status_product: !!status_product
+				? status_product
+				: productId.status_product,
+			SKU: !!SKU ? SKU : productId.SKU
 		});
 
 		// ค้นหา product ที่จะอัพเดต
@@ -523,7 +551,7 @@ const Mutation = {
 
 		// ทำการแก้ไข ImageUrl ใน Database
 		await ImageUrl.findByIdAndUpdate(id, {
-			imageUrl: !!imageUrl ? imageUrl : productId.imageUrl
+			imageUrl: !!imageUrl ? imageUrl : imageUrlId.product.imageUrl
 		});
 
 		// ค้นหา imageUrl ที่จะอัพเดต
@@ -536,6 +564,194 @@ const Mutation = {
 		return updatedImageUrl;
 	},
 	deleteImageUrlProduct: async (parent, args, { userId }, info) => {
+		const { idImg, idPro } = args;
+
+		// เช็คว่ามี userId หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// ค้นหา user product และ imageurl ใน database
+		const user = await User.findById(userId);
+		const product = await Product.findById(idPro);
+		const imageUrl = await ImageUrl.findById(idImg);
+
+		// เช็คว่า user เป็นเจ้าของ imageUrl หรือไม่
+		if (userId !== imageUrl.product.user.toString())
+			throw new Error('You not authorized.');
+
+		// ลบ imageUrl
+		const deletedImageUrl = await ImageUrl.findByIdAndRemove(idImg).populate({
+			path: 'product',
+			populate: { path: 'user' }
+		});
+
+		// อัพ product.imageurl ใหม่เพราะมี imageUrl ลบไป
+		const updatedImageUrlProduct = product.imageUrl.filter(
+			(imageUrlId) => imageUrlId.toString() !== deletedImageUrl.id.toString()
+		);
+		await Product.findByIdAndUpdate(product, {
+			imageUrl: updatedImageUrlProduct
+		});
+
+		// return ค่า
+		return deletedImageUrl;
+	},
+	addStatusPro: async (parent, args, { userId }, info) => {
+		const { id, Status } = args;
+
+		// เช็คว่ามี user หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// ค้นหา product ใน database
+		const product = await Product.findById(id);
+
+		// เช็คว่ามีการใส่ฟิลที่กำหนดครบหรือไม่
+		if (!id || !Status) throw new Error('Please provide all required fields.');
+
+		// สร้าง status ขึ้นมา
+		const statusCreate = await StatusProduct.create({ ...args, product: id });
+
+		// เช็คว่าถ้า product ไม่มีตาราง statusPro ให้ทำการสร้างและเพิ่ม
+		if (!product.status_product) {
+			product.status_product = [statusCreate];
+		} else {
+			product.status_product.push(statusCreate);
+		}
+
+		// save ข้อมูล product
+		await product.save();
+
+		// return ค่า
+		return StatusProduct.findById(statusCreate.id).populate({
+			path: 'product',
+			populate: { path: 'status_product' }
+		});
+	},
+	updateStatusPro: async (parent, args, { userId }, info) => {
+		const { id, Status } = args;
+
+		// เช็คว่ามี user หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// หา statusPro ใน Database
+		const statusProId = await StatusProduct.findById(id);
+
+		// เช็คว่ามี statusPro ID ที่จะแก้ไขหรือไม่
+		if (!statusProId) throw new Error('There are not product IDs metioned.');
+
+		// เช็คว่า statusPro นี้เป็นของ user ที่ขอแก้ไขหรือไม่
+		if (userId !== statusProId.product.user.toString())
+			throw new Error('You are not authorized.');
+
+		// ทำการแก้ไข statusPro ใน Database
+		await StatusProduct.findByIdAndUpdate(id, {
+			status: !!Status ? Status : statusProId.product.imageUrl
+		});
+
+		// ค้นหา statusPro ที่จะอัพเดต
+		const updatedStatus = await StatusProduct.findById(id).populate({
+			path: 'product',
+			populate: { path: 'user' }
+		});
+
+		// return ค่า
+		return updatedStatus;
+	},
+	deleteStatusPro: async (parent, args, { userId }, info) => {
+		const { idPro, idStaPro } = args;
+
+		// เช็คว่ามี userId หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// ค้นหา user product และ statusShow ใน database
+		const user = await User.findById(userId);
+		const product = await Product.findById(idPro);
+		const statusProId = await StatusProduct.findById(idStaPro);
+
+		// เช็คว่า user เป็นเจ้าของ statusShow หรือไม่
+		if (userId !== statusProId.product.user.toString())
+			throw new Error('You not authorized.');
+
+		// ลบ statusShow
+		const deletedStatusPro = await StatusProduct.findByIdAndRemove(
+			idStaPro
+		).populate({
+			path: 'product',
+			populate: { path: 'user' }
+		});
+
+		// อัพ product.status_show ใหม่เพราะมี StatusShow ลบไป
+		const updatedStatusProProduct = product.status_show.filter(
+			(StatusProId) => StatusProId.toString() !== deletedStatusPro.id.toString()
+		);
+		await Product.findByIdAndUpdate(product, {
+			status_pro: updatedStatusProProduct
+		});
+
+		// return ค่า
+		return deletedStatusPro;
+	},
+	addStatusShow: async (parent, args, { userId }, info) => {
+		const { id, Status } = args;
+
+		// เช็คว่ามี user หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// ค้นหา product ใน database
+		const product = await Product.findById(id);
+
+		// เช็คว่ามีการใส่ฟิลที่กำหนดครบหรือไม่
+		if (!id || !Status) throw new Error('Please provide all required fields.');
+
+		// สร้าง statusShow ขึ้นมา
+		const StatusCreate = await StatusShow.create({ ...args, product: id });
+
+		// เช็คว่าถ้า product ไม่มีตาราง statusShow ให้ทำการสร้างและเพิ่ม
+		if (!product.status_show) {
+			product.status_show = [StatusCreate];
+		} else {
+			product.status_show.push(StatusCreate);
+		}
+
+		// save ข้อมูล product
+		await product.save();
+
+		// return ค่า
+		return StatusShow.findById(StatusCreate.id).populate({
+			path: 'product',
+			populate: { path: 'status_show' }
+		});
+	},
+	updateStatusShow: async (parent, args, { userId }, info) => {
+		const { id, Status } = args;
+
+		// เช็คว่ามี user หรือไม่
+		if (!userId) throw new Error('Please log in.');
+
+		// หา statusShow ใน Database
+		const StatusShowId = await StatusShow.findById(id);
+
+		// เช็คว่ามี statusShow ID ที่จะแก้ไขหรือไม่
+		if (!StatusShowId) throw new Error('There are not product IDs metioned.');
+
+		// เช็คว่า statusShow นี้เป็นของ user ที่ขอแก้ไขหรือไม่
+		if (userId !== StatusShowId.product.user.toString())
+			throw new Error('You are not authorized.');
+
+		// ทำการแก้ไข statusShow ใน Database
+		await StatusShow.findByIdAndUpdate(id, {
+			status: !!Status ? Status : StatusShowId.product.status_show
+		});
+
+		// ค้นหา statusShow ที่จะอัพเดต
+		const updatedStatusShow = await StatusShow.findById(id).populate({
+			path: 'product',
+			populate: { path: 'status_show' }
+		});
+
+		// return ค่า
+		return updatedStatusShow;
+	},
+	deleteStatusShow: async (parent, args, { userId }, info) => {
 		const { idImg, idPro } = args;
 
 		// เช็คว่ามี userId หรือไม่

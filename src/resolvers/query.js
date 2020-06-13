@@ -67,6 +67,14 @@ const Query = {
 			.populate({
 				path: 'imageUrl',
 				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'status_show',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'status_product',
+				populate: { path: 'product' }
 			}),
 	products: (parent, args, context, info) =>
 		Product.find({})
@@ -84,6 +92,14 @@ const Query = {
 			})
 			.populate({
 				path: 'imageUrl',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'status_show',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'status_product',
 				populate: { path: 'product' }
 			})
 			.sort({ createdAt: 'desc' })

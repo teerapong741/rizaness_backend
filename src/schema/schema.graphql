@@ -22,7 +22,6 @@ type Mutation {
 	login(username: String!, password: String!): AuthData
 
 	addPhone(phone: String!): User
-
 	updatePhone(phone: String!): User
 
 	addAddress(
@@ -32,7 +31,6 @@ type Mutation {
 		province: String!
 		postal_code: String!
 	): Address!
-
 	updateAddress(
 		id: String!
 		address: String
@@ -41,7 +39,6 @@ type Mutation {
 		province: String
 		postal_code: String
 	): Address!
-
 	deleteAddress(id: ID!): Address!
 
 	addProduct(
@@ -51,8 +48,10 @@ type Mutation {
 		price: Float!
 		discountType: String
 		discount: Float
+		status_show: String
+		status_product: String
+		SKU: String
 	): Product!
-
 	updateProduct(
 		id: ID!
 		name: String
@@ -61,21 +60,27 @@ type Mutation {
 		price: Float
 		discountType: String
 		discount: Float
+		status_show: String
+		status_product: String
+		SKU: String
 	): Product!
-
 	deleteProduct(id: ID!): Product
 
 	addToCart(id: ID!): CartItem!
-
 	deleteOneInCart(id: ID!): CartItem!
-
 	deleteAllInCart(id: ID!): CartItem!
 
 	addImageUrlProduct(id: ID!, imageUrl: String!): ImageUrl!
-
 	updateImageUrlProduct(id: ID!, imageUrl: String!): ImageUrl!
-
 	deleteImageUrlProduct(idImg: ID!, idPro: ID!): ImageUrl!
+
+	addStatusPro(id: ID!, Status: String!): StatusProduct!
+	updateStatusPro(id: ID!, Status: String!): StatusProduct!
+	deleteStatusPro(idPro: ID!, idStaPro: ID!): StatusProduct!
+
+	addStatusShow(id: ID!, Status: String!): StatusShow!
+	updateStatusShow(id: ID!, Status: String!): StatusShow!
+	deleteStatusShow(idPro: ID!, idStaShow: ID!): StatusShow!
 }
 
 type User {
@@ -123,7 +128,24 @@ type Product {
 	num_put_basket: Int #จำนวนที่เคยถูกใส่ในตะกร้า
 	traffic: [Traffic]! #จำนวนการเข้าชม
 	user: User! #เจ้าของสินค้านี้
+	status_show: [StatusShow]! #สถานะว่า product นี้มีขาย หมดสต็อก หรือเลิกจำหน่าย
+	status_product: [StatusProduct]! #สถานะว่า product นี้ขายดี สินค้าแนะนำ และอื่นๆ
+	SKU: String! # รหัส SKU ของสินค้านี้
 	createdAt: DateTime! #สร้างเมื่อ
+}
+
+type StatusProduct {
+	id: ID!
+	status: String! #สถานะ สินค้าขายดี สินค้าแนะนำ สินค้ามาใหม่
+	product: Product!
+	createdAt: DateTime!
+}
+
+type StatusShow {
+	id: ID!
+	status: String! #สถานะ กำลังจัดจำหน่าย สินค้าหมดสต็อก เลิกจำหน่าย
+	product: Product!
+	createdAt: DateTime!
 }
 
 type ImageUrl {

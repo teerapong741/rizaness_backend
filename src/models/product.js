@@ -55,6 +55,24 @@ const productSchema = mongoose.Schema({
 		ref: 'User',
 		required: true
 	},
+	StatusShow: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'StatusShow',
+			required: true
+		}
+	],
+	StatusProduct: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'StatusProduct',
+			required: true
+		}
+	],
+	SKU: {
+		type: String,
+		required: true
+	},
 	createdAt: {
 		type: Date,
 		required: true,
