@@ -1,0 +1,153 @@
+type Query {
+	user: User
+	users: [User]!
+	product(id: ID!): Product
+	products: [Product]!
+}
+
+type Mutation {
+	signup(
+		username: String!
+		password: String!
+		confirmPassword: String!
+		fname: String!
+		lname: String!
+		birthday: Date!
+		sex: String!
+		phone: String
+		email: String!
+		authority: String!
+	): User
+
+	login(username: String!, password: String!): AuthData
+
+	addPhone(phone: String!): User
+
+	updatePhone(phone: String!): User
+
+	addAddress(
+		address: String!
+		sub_area: String!
+		district: String!
+		province: String!
+		postal_code: String!
+	): Address!
+
+	updateAddress(
+		id: String!
+		address: String
+		sub_area: String
+		district: String
+		province: String
+		postal_code: String
+	): Address!
+
+	deleteAddress(id: ID!): Address!
+
+	addProduct(
+		name: String!
+		type: String!
+		description: String!
+		price: Float!
+		discountType: String
+		discount: Float
+	): Product!
+
+	updateProduct(
+		id: ID!
+		name: String
+		type: String
+		description: String
+		price: Float
+		discountType: String
+		discount: Float
+	): Product!
+
+	deleteProduct(id: ID!): Product
+
+	addToCart(id: ID!): CartItem!
+
+	deleteOneInCart(id: ID!): CartItem!
+
+	deleteAllInCart(id: ID!): CartItem!
+
+	addImageUrlProduct(id: ID!, imageUrl: String!): ImageUrl!
+
+	updateImageUrlProduct(id: ID!, imageUrl: String!): ImageUrl!
+
+	deleteImageUrlProduct(idImg: ID!, idPro: ID!): ImageUrl!
+}
+
+type User {
+	id: ID!
+	username: String! #ชื่อผู้ใช้
+	password: String! #รหัสผ่าน
+	fname: String! #ชื่อจริง
+	lname: String! #นามสกุล
+	birthday: Date! #วันเกิด
+	sex: String! #เพศ
+	email: String! #อีเมล
+	phone: String #เบอร์มือถือ
+	address: [Address]! #ที่อยู่
+	products: [Product]! #สินค้าของผู้ใช้คนนี้
+	carts: [CartItem]! #ตะกร้าสินค้า
+	authority: String! #สิทธ์ผู้ใช้
+	createdAt: DateTime! #สร้างเมื่อวันที่
+}
+
+scalar Date
+scalar DateTime
+
+type Address {
+	id: ID!
+	address: String! #ที่อยู่
+	sub_area: String! #ตำบล
+	district: String! #อำเภอ
+	province: String! #จังหวัด
+	postal_code: String! #รหัสไปรษณีย์
+	user: User!
+	createdAt: DateTime!
+}
+
+type Product {
+	id: ID!
+	name: String! #ชื่อสินค้า
+	type: String! #หมวดหมู่สินค้า
+	description: String! #รายละเอียดสินค้า
+	imageUrl: [ImageUrl]! #รูปภาพสินค้า
+	price: Float! #ราคาเต็ม
+	discountType: String #ชนิดส่วนลด
+	discount: Float #ส่วนลด
+	num_of_sold: Int #จำนวนที่ขายไปแล้ว
+	num_put_basket_now: Int #จำนวนที่อยู่ในตะกร้าตอนนี้
+	num_put_basket: Int #จำนวนที่เคยถูกใส่ในตะกร้า
+	traffic: [Traffic]! #จำนวนการเข้าชม
+	user: User! #เจ้าของสินค้านี้
+	createdAt: DateTime! #สร้างเมื่อ
+}
+
+type ImageUrl {
+	id: ID!
+	imageUrl: String!
+	product: Product!
+	createdAt: DateTime!
+}
+
+type Traffic {
+	id: ID!
+	product: Product!
+	createdAt: DateTime!
+}
+
+type CartItem {
+	id: ID!
+	product: Product! #สินค้าที่อยู่ในตะกร้า
+	quantity: Int! #จำนวน
+	user: User! #ผู้ใช้ทีเป็นเจ้าของตะกร้า
+	createdAt: DateTime! #สร้างเมื่อวันที่
+}
+
+type AuthData {
+	user: User
+	jwt: String
+}
