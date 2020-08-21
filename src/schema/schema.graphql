@@ -43,26 +43,32 @@ type Mutation {
 
 	addProduct(
 		name: String!
-		type: String!
 		description: String!
 		price: Float!
+		min_of_stock: Float!
 		discountType: String
 		discount: Float
-		status_show: String
-		status_product: String
+		discountTimeStart: DateTime
+		discountTimeEnd: DateTime
+		mem_point: Int
+		dis_point: Int
 		SKU: String
+		ParentSKU: String!
 	): Product!
 	updateProduct(
 		id: ID!
 		name: String
-		type: String
 		description: String
 		price: Float
+		min_of_stock: Float!
 		discountType: String
 		discount: Float
-		status_show: String
-		status_product: String
+		discountTimeStart: DateTime
+		discountTimeEnd: DateTime
+		mem_point: Int
+		dis_point: Int
 		SKU: String
+		ParentSKU: String
 	): Product!
 	deleteProduct(id: ID!): Product
 
@@ -74,13 +80,50 @@ type Mutation {
 	updateImageUrlProduct(id: ID!, imageUrl: String!): ImageUrl!
 	deleteImageUrlProduct(idImg: ID!, idPro: ID!): ImageUrl!
 
-	addStatusPro(id: ID!, Status: String!): StatusProduct!
-	updateStatusPro(id: ID!, Status: String!): StatusProduct!
+	addStatusPro(id: ID!, status: String!): StatusProduct!
+	updateStatusPro(id: ID!, status: String!): StatusProduct!
 	deleteStatusPro(idPro: ID!, idStaPro: ID!): StatusProduct!
 
-	addStatusShow(id: ID!, Status: String!): StatusShow!
-	updateStatusShow(id: ID!, Status: String!): StatusShow!
+	addStatusShow(id: ID!, status: String!): StatusShow!
+	updateStatusShow(id: ID!, status: String!): StatusShow!
 	deleteStatusShow(idPro: ID!, idStaShow: ID!): StatusShow!
+
+	addStock(
+		id: ID!
+		price: Float!
+		cost: Float!
+		statusExpiration: String!
+		Expiration: Date
+		stock: Float!
+	): Stock!
+	updateStock(
+		id: ID!
+		price: Float
+		cost: Float
+		statusExpiration: String
+		Expiration: Date
+		stock: Float!
+	): Stock!
+	deleteStock(idPro: ID!, idStock: ID!): Stock!
+
+	addStockEdit(
+		id: ID!
+		stockEdit: Float!
+		priceEdit: Float!
+		costEdit: Float!
+		statusExpirationEdit: String!
+		ExpirationEdit: Date
+		createdAt: DateTime!
+	): StockEdit!
+	deleteStockEdit(idStockEdit: ID!, idStock: ID!): StockEdit!
+
+	addProductType(id: ID!, type: String!): ProductType!
+	updateProductType(id: ID!, type: String!): ProductType!
+	deleteProductType(idPro: ID!, idProType: ID!): ProductType!
+
+	addProductWholeSale(idPro: ID!, price: Float!, min_sale: Float!, max_sale: Float!): ProductWholeSale!
+	updateProductWholeSale(idWhole: ID!, price: Float, min_sale: Float, max_sale: Float): ProductWholeSale!
+	deleteProductWholeSale(idPro: ID!, idWhole: ID!): ProductWholeSale!
 }
 
 type User {
@@ -117,12 +160,16 @@ type Address {
 type Product {
 	id: ID!
 	name: String! #ชื่อสินค้า
-	type: String! #หมวดหมู่สินค้า
+	type: [ProductType]! #หมวดหมู่สินค้า
 	description: String! #รายละเอียดสินค้า
 	imageUrl: [ImageUrl]! #รูปภาพสินค้า
 	price: Float! #ราคาเต็ม
+	min_of_stock: Float! #สต๊อกขั้นต่ำ
+	num_of_stock: [Stock]! #จำนวนสินค้าในสต็อก
 	discountType: String #ชนิดส่วนลด
 	discount: Float #ส่วนลด
+	discountTimeStart: DateTime # วันเริ่มโปรโมชั่น
+	discountTimeEnd: DateTime # วันหมดโปรโมชั่น
 	num_of_sold: Int #จำนวนที่ขายไปแล้ว
 	num_put_basket_now: Int #จำนวนที่อยู่ในตะกร้าตอนนี้
 	num_put_basket: Int #จำนวนที่เคยถูกใส่ในตะกร้า
@@ -130,8 +177,51 @@ type Product {
 	user: User! #เจ้าของสินค้านี้
 	status_show: [StatusShow]! #สถานะว่า product นี้มีขาย หมดสต็อก หรือเลิกจำหน่าย
 	status_product: [StatusProduct]! #สถานะว่า product นี้ขายดี สินค้าแนะนำ และอื่นๆ
-	SKU: String! # รหัส SKU ของสินค้านี้
+	mem_point: Int #แต้มสะสมสมาชิก
+	dis_point: Int #แต้มสะสม ตัวแทน
+	productWholeSale: [ProductWholeSale]! # ราคาขายส่ง
+	SKU: String # รหัส SKU ของสินค้านี้
+	ParentSKU: String # รหัส SKU ของสินค้านี้
 	createdAt: DateTime! #สร้างเมื่อ
+}
+
+type ProductWholeSale {
+	id: ID!
+	price: Float!
+	min_sale: Float!
+	max_sale: Float!
+	product: Product!
+	createdAt: DateTime!
+}
+
+type ProductType {
+	id: ID!
+	type: String!
+	product: Product!
+	createdAt: DateTime!
+}
+
+type Stock {
+	id: ID!
+	stock: Float!
+	price: Float!
+	cost: Float!
+	statusExpiration: String!
+	Expiration: Date
+	stockEdit: [StockEdit]!
+	product: Product!
+	createdAt: DateTime!
+}
+
+type StockEdit {
+	id: ID!
+	stockEdit: Float!
+	priceEdit: Float!
+	costEdit: Float!
+	statusExpirationEdit: String!
+	ExpirationEdit: DateTime
+	stock: Stock!
+	createdAt: DateTime!
 }
 
 type StatusProduct {

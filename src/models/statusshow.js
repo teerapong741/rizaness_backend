@@ -5,13 +5,11 @@ const statusShowSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	product: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Product',
-			required: true
-		}
-	],
+	product: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Product',
+		required: true
+	},
 	createdAt: {
 		type: Date,
 		required: true,

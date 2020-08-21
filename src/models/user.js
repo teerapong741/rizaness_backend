@@ -56,6 +56,18 @@ const userSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
+	// mem_point: [
+	// 	{
+	// 		type: mongoose.Schema.Types.ObjectId,
+	// 		ref: 'Product'
+	// 	}
+	// ],
+	// dis_point: [
+	// 	{
+	// 		type: mongoose.Schema.Types.ObjectId,
+	// 		ref: 'Product'
+	// 	}
+	// ],
 	createdAt: {
 		type: Date,
 		required: true,

@@ -1,5 +1,8 @@
 import User from '../models/user';
 import Product from '../models/product';
+import ImageUrl from '../models/imageurl';
+import StatusShow from '../models/statusshow';
+import StatusProduct from '../models/statusproduct';
 
 const Query = {
 	user: (parent, args, { userId }, info) => {
@@ -14,11 +17,41 @@ const Query = {
 			.populate({
 				path: 'products',
 				populate: {
-					path: 'user',
-					populate: { path: 'traffic' }
-				},
+					path: 'user'
+				}
+			})
+			.populate({
+				path: 'products',
 				populate: {
 					path: 'imageUrl'
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'status_show',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'status_product',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'productWholeSale',
+					populate: { path: 'product' }
 				}
 			})
 			.populate({
@@ -28,6 +61,33 @@ const Query = {
 			.populate({
 				path: 'carts',
 				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'type',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: {
+						path: 'stockEdit',
+						populate: {
+							path: 'stock',
+							populate: { path: 'product' }
+						}
+					}
+				}
 			});
 	},
 	users: (parent, args, context, info) =>
@@ -39,11 +99,41 @@ const Query = {
 			.populate({
 				path: 'products',
 				populate: {
-					path: 'user',
-					populate: { path: 'traffic' }
-				},
+					path: 'user'
+				}
+			})
+			.populate({
+				path: 'products',
 				populate: {
 					path: 'imageUrl'
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'status_show',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'status_product',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'productWholeSale',
+					populate: { path: 'product' }
 				}
 			})
 			.populate({
@@ -53,6 +143,33 @@ const Query = {
 			.populate({
 				path: 'carts',
 				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'type',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: { path: 'product' }
+				}
+			})
+			.populate({
+				path: 'products',
+				populate: {
+					path: 'num_of_stock',
+					populate: {
+						path: 'stockEdit',
+						poppulate: {
+							path: 'stock',
+							populate: { path: 'product' }
+						}
+					}
+				}
 			}),
 	product: (parent, args, context, info) =>
 		Product.findById(args.id)
@@ -75,7 +192,34 @@ const Query = {
 			.populate({
 				path: 'status_product',
 				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'productWholeSale',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'type',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: {
+					path: 'stockEdit',
+					populate: {
+						path: 'stock',
+						populate: { path: 'product' }
+					}
+				}
 			}),
+
 	products: (parent, args, context, info) =>
 		Product.find({})
 			.populate({
@@ -101,6 +245,32 @@ const Query = {
 			.populate({
 				path: 'status_product',
 				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'productWholeSale',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'type',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: { path: 'product' }
+			})
+			.populate({
+				path: 'num_of_stock',
+				populate: {
+					path: 'stockEdit',
+					populate: {
+						path: 'stock',
+						populate: { path: 'product' }
+					}
+				}
 			})
 			.sort({ createdAt: 'desc' })
 };

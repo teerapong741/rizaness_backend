@@ -5,10 +5,12 @@ const productSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	type: {
-		type: String,
-		required: true
-	},
+	type: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'ProductType'
+		}
+	],
 	description: {
 		type: String,
 		required: true
@@ -24,6 +26,17 @@ const productSchema = mongoose.Schema({
 		type: Number,
 		required: true
 	},
+	min_of_stock: {
+		type: Number,
+		required: true
+	},
+	num_of_stock: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Stock',
+			required: true
+		}
+	],
 	discountType: {
 		type: String,
 		default: 'none'
@@ -31,6 +44,12 @@ const productSchema = mongoose.Schema({
 	discount: {
 		type: Number,
 		default: 0
+	},
+	discountTimeStart: {
+		type: Date
+	},
+	discountTimeEnd: {
+		type: Date
 	},
 	num_of_sold: {
 		type: Number,
@@ -55,21 +74,39 @@ const productSchema = mongoose.Schema({
 		ref: 'User',
 		required: true
 	},
-	StatusShow: [
+	status_show: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'StatusShow',
 			required: true
 		}
 	],
-	StatusProduct: [
+	status_product: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'StatusProduct',
 			required: true
 		}
 	],
+	mem_point: {
+		type: Number,
+		default: 0
+	},
+	dis_point: {
+		type: Number,
+		default: 0
+	},
+	productWholeSale: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'ProductWholeSale',
+			required: true
+		}
+	],
 	SKU: {
+		type: String
+	},
+	ParentSKU: {
 		type: String,
 		required: true
 	},
