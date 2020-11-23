@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema({
+	imageUrl: {
+		type: String
+	},
 	username: {
 		type: String,
 		required: true,
@@ -40,12 +43,6 @@ const userSchema = mongoose.Schema({
 			ref: 'Address'
 		}
 	],
-	products: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Product'
-		}
-	],
 	carts: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
@@ -67,7 +64,13 @@ const userSchema = mongoose.Schema({
 	// 		type: mongoose.Schema.Types.ObjectId,
 	// 		ref: 'Product'
 	// 	}
-	// ],
+	// ],,
+	shops: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Shop'
+		}
+	],
 	createdAt: {
 		type: Date,
 		required: true,
@@ -77,3 +80,11 @@ const userSchema = mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 export default User;
+
+// ,
+// 	products: [
+// 		{
+// 			type: mongoose.Schema.Types.ObjectId,
+// 			ref: 'Product'
+// 		}
+// 	]

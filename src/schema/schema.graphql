@@ -1,12 +1,29 @@
 type Query {
 	user: User
 	users: [User]!
+	addresses(
+			address: String
+			sub_area: String
+			district: String
+			province: String
+			postal_code: String
+			): [Address]!
+	shop(id: ID!): Shop
+	shops: [Shop]!
+	addressShops(
+		address: String
+		sub_area: String
+		district: String
+		province: String
+		postal_code: String
+	): [AddressShop]!
 	product(id: ID!): Product
 	products: [Product]!
 }
 
 type Mutation {
 	signup(
+		imageUrl: String
 		username: String!
 		password: String!
 		confirmPassword: String!
@@ -41,9 +58,95 @@ type Mutation {
 	): Address!
 	deleteAddress(id: ID!): Address!
 
+#! Pass
+	addShop(
+		profileShop: String, 
+		shopName: String!,
+		storeFront: Boolean!,
+		layer_depth: Int, 
+		workforce_per_row: Int,
+		dis_stock: Boolean!,
+		dis_no_stock: Boolean!,
+		dis_system: Boolean!
+		): Shop!
+#! Pass	
+	updateShop(
+		idShop: ID! 
+		profileShop: String, 
+		shopName: String,
+		storeFront: Boolean,
+		layer_depth: Int, 
+		workforce_per_row: Int,
+		dis_stock: Boolean,
+		dis_no_stock: Boolean,
+		dis_system: Boolean
+		): Shop!
+#! Pass
+	deleteShop(idShop: ID!): Shop!
+
+
+
+
+#! Test
+	addLayerDepthReward(
+		layer: Int!
+		type: String!
+		discount: Float!
+		idShop: ID!
+	): layer_depth_reward!
+#! Test
+	updateLayerDepthReward(
+		layer: Int
+		idLayerDepthReward: ID!
+		idShop: ID!
+		type: String
+		discount: Float
+	): layer_depth_reward!
+#! Test
+	deleteLayerDepthReward(
+		idLayerDepthReward: ID!
+		idShop: ID!
+	): layer_depth_reward!
+
+
+
+#! Pass
+	addAddressShop(
+		idShop: ID!
+		address: String!
+		sub_area: String!
+		district: String!
+		province: String!
+		postal_code: String!
+		): AddressShop!
+#! Pass
+	updateAddressShop(
+		idShop: ID!
+		idAdd: ID!
+		address: String
+		sub_area: String
+		district: String
+		province: String
+		postal_code: String
+	): AddressShop!
+#! Pass
+	deleteAddressShop(
+		idAddress: ID!
+		idShop: ID!
+	): AddressShop!
+
+
+
+
+
+
+#! Pass
 	addProduct(
+		idOwner: ID!
+		idShop: ID!
+		idPickUpFrom: ID!
 		name: String!
-		description: String!
+		description: String
 		price: Float!
 		min_of_stock: Float!
 		discountType: String
@@ -55,8 +158,12 @@ type Mutation {
 		SKU: String
 		ParentSKU: String!
 	): Product!
+#! Pass
 	updateProduct(
 		id: ID!
+		idOwner: ID!
+		idShop: ID!
+		idPickUpFrom: ID!
 		name: String
 		description: String
 		price: Float
@@ -70,7 +177,11 @@ type Mutation {
 		SKU: String
 		ParentSKU: String
 	): Product!
-	deleteProduct(id: ID!): Product
+#! Pass
+	deleteProduct(idPro: ID!, idShop: ID!): Product
+
+
+
 
 	addToCart(id: ID!): CartItem!
 	deleteOneInCart(id: ID!): CartItem!
@@ -124,10 +235,517 @@ type Mutation {
 	addProductWholeSale(idPro: ID!, price: Float!, min_sale: Float!, max_sale: Float!): ProductWholeSale!
 	updateProductWholeSale(idWhole: ID!, price: Float, min_sale: Float, max_sale: Float): ProductWholeSale!
 	deleteProductWholeSale(idPro: ID!, idWhole: ID!): ProductWholeSale!
+
+
+#! Pass
+	addRankDistributorModel(
+		idShop: ID!
+		icon: String
+		rank_name: String!
+		no: Int
+		discount: Float
+		color: String!
+	): rank_distributor_model!
+#! Pass
+	updateRankDistributorModel(
+		idShop: ID!
+		idRankDisMo: ID!
+		icon: String
+		no: Int
+		rank_name: String
+		discount: Float
+		color: String
+	): rank_distributor_model!
+#! Pass
+	deleteRankDistributorModel(idRankDisMo: ID!, idShop: ID!): rank_distributor_model!
+
+
+
+
+
+
+#! Pass
+	addRewardRankDisModel(
+		idRank: ID!
+		reward: String!
+		img: String
+	): reward_rank_dis_model!
+#! Pass
+	updateRewardRankDisModel(
+		idRank: ID!
+		idReRank: ID!
+		reward: String!
+		img: String
+	): reward_rank_dis_model!
+#! test
+	deleteRewardRankDisModel(
+		idReRank: ID!
+		idRank: ID!
+	): reward_rank_dis_model!
+
+
+
+
+
+
+#! Pass
+	addConditionRankDisModel(
+		idRank: ID!
+		condition: String!
+		img: String
+	): condition_rank_dis_model!
+#! Pass
+	updateConditionRankDisModel(
+		idRank: ID!
+		idConRank: ID!
+		condition: String!
+		img: String
+	): condition_rank_dis_model!
+#! test
+	deleteConditionRankDisModel(
+		idConRank: ID!
+		idRank: ID!
+	): condition_rank_dis_model!
+
+
+
+
+
+
+#! Pass
+	addTreatmentRankDisModel(
+		idRank: ID!
+		treatment: String!
+		img: String
+	): treatment_rank_dis_model!
+#! Pass
+	updateTreatmentRankDisModel(
+		idRank: ID!
+		idTreRank: ID!
+		treatment: String!
+		img: String
+	): treatment_rank_dis_model!
+#! test
+	deleteTreatmentRankDisModel(
+		idTreRank: ID!
+		idRank: ID!
+	): treatment_rank_dis_model!
+
+
+
+
+
+
+
+#! Pass
+	addRankMemberModel(
+		idShop: ID!
+		rank_name: String!
+		no: Int!
+		reward: String!
+		discount: Float!
+		condition: String!
+		treatment: String!
+	): rank_member_model!
+#! Pass
+	updateRankMemberModel(
+		idShop: ID!
+		idRankMemMo: ID!
+		rank_name: String
+		no: Int!
+		reward: String
+		discount: Float
+		condition: String
+		treatment: String
+	): rank_member_model!
+#! Pass
+	deleteRankMemberModel(idRankMemMo: ID!, idShop: ID!): rank_member_model!
+
+
+
+
+#! Pass
+	addRankStaffModel(
+		idShop: ID!
+		rank_name: String!
+		no: Int!
+		reward: String!
+		discount: Float!
+		condition: String!
+		treatment: String!
+	): rank_staff_model!
+#! Pass
+	updateRankStaffModel(
+		idShop: ID!
+		idRankStaffMo: ID!
+		no: Int!
+		rank_name: String
+		reward: String
+		discount: Float
+		condition: String
+		treatment: String
+	): rank_staff_model!
+#! Pass
+	deleteRankStaffModel(idRankStaffMo: ID!, idShop: ID!): rank_staff_model!
+
+
+
+
+#! Pass
+	addRewardPointDistributorModel(
+		idShop: ID!
+		condition: String!
+		usePoint: Float!
+		reward: String!
+	): reward_point_distributor_model!
+#! Pass
+	updateRewardPointDistributorModel(
+		idShop: ID!
+		idReward: ID!
+		condition: String
+		usePoint: Float
+		reward: String
+	): reward_point_distributor_model!
+#! Pass
+	deleteRewardPointDistributorModel(idReward: ID!, idShop: ID!): reward_point_distributor_model!
+
+
+
+
+#! Pass
+	addRewardPointMemberModel(
+		idShop: ID!
+		condition: String!
+		usePoint: Float!
+		reward: String!
+	): reward_point_member_model!
+#! Pass
+	updateRewardPointMemberModel(
+		idShop: ID!
+		idReward: ID!
+		condition: String
+		usePoint: Float
+		reward: String
+	): reward_point_member_model!
+#! Pass
+	deleteRewardPointMemberModel(idReward: ID!, idShop: ID!): reward_point_member_model!
+
+
+
+
+#! Pass
+	addRewardPointStaffModel(
+		idShop: ID!
+		condition: String!
+		usePoint: Float!
+		reward: String!
+	): reward_point_staff_model!
+#! Pass
+	updateRewardPointStaffModel(
+		idShop: ID!
+		idReward: ID!
+		condition: String
+		usePoint: Float
+		reward: String
+	): reward_point_staff_model!
+#! Pass
+	deleteRewardPointStaffModel(idReward: ID!, idShop: ID!): reward_point_staff_model!
+
+
+
+
+#!----------------
+# #! test
+# 	addRequest(
+# 		sentTo: ID!
+# 		sentFrom: ID!
+# 		request: String!
+# 		status: String!
+# 	): requestForm!
+# #! test
+# 	updateRequest(
+# 		reqID: ID!
+# 		sentTo: ID!
+# 		sentFrom: ID!
+# 		request: String
+# 		status: String
+# 	): requestForm!
+# #! test
+# 	deleteRequest(
+# 		reqID: ID!
+# 		userID: ID!
+# 	): requestForm!
+#!----------------
+
+
+
+
+
+
+#! Pass
+	addMemberCustomer(
+		idShop: ID!
+		idCus: ID!
+		idRankModel: ID!
+		discount: Float!
+		codeCustomer: String!
+	): memberCustomer!
+#! เหลือย้ายไป Shop ใหม่ยังทำไม่ได้
+	updateMemberCustomer(
+		idShop: ID!
+		idNewShop: ID
+		idCus: ID!
+		idRankModel: ID
+		discount: Float
+		codeCustomer: String
+	): memberCustomer!
+#! Pass
+	deleteMemberCustomer(idCus: ID!, idShop: ID!): memberCustomer!
+
+
+
+
+
+#! Pass
+	addDistributor(
+		idShop: ID!
+		idDis: ID!
+		idRankModel: ID!
+		discount: Float!
+		codeDistributor: String!
+		idSupervisor: ID!
+	): distributor!
+#! เหลือย้าย หัวหน้าคนใหม่ และ ย้ายร้านใหม่
+	updateDistributor(
+		idShop: ID!
+		idDis: ID!
+		idSupervisor: ID!
+		idNewSuper: ID
+		idNewShop: ID
+		idRankModel: ID!
+		discount: Float
+		codeDistributor: String
+	): distributor!
+#! Pass
+	deleteDistributor(idDis: ID!, idShop: ID!): distributor!
+
+
+
+
+
+
+#! Pass
+	addStaff(
+		idStaff: ID!
+		idRankModel: ID!
+		idBranch: ID!
+		wages: Float!
+		employmentPattern: String!
+		discount: Float!
+		codeStaff: String!
+	): staff!
+#! เหลือย้ายสาขา
+	updateStaff(
+		idStaff: ID!
+		idRankModel: ID
+		idBranch: ID
+		wages: Float
+		employmentPattern: String
+		discount: Float
+		codeStaff: String
+	): staff!
+#! Pass
+	deleteStaff(idStaff: ID!, idBranch: ID!): staff!
+
+
+
+
+
+
+
+#! Pass
+	addWorkSchedule(
+		idStaff: ID!
+		idRankModel: ID!
+		wages: Float!
+		employmentPattern: String!
+	): WorkSchedule!
+#! Pass
+	updateWorkSchedule(
+		idWorkSchedule: ID!
+		idRankModel: ID
+		wages: Float
+		checkOut: DateTime
+		employmentPattern: String
+		totalWagesToDay: Float
+	): WorkSchedule!
+#! Pass
+	deleteWorkSchedule(idStaff: ID!, idWorkSchedule: ID!): WorkSchedule!
+
+
+
+
+
+
+#! Pass 
+	addPointMember(
+		idMember: ID!
+		addPoint: Float!
+		delPoint: Float!
+		description: String!
+	): point_member
+#! Pass
+	updatePointMember(
+		idMember: ID!
+		idPoint: ID!
+		addPoint: Float
+		delPoint: Float
+		description: String
+	): point_member
+#! Pass
+	deletePointMember(
+		idPoint: ID!,
+		idMember: ID!
+	): point_member
+
+
+
+
+#! Pass
+	addPointDistributor(
+		idDis: ID!
+		addPoint: Float!
+		delPoint: Float!
+		description: String!
+	): point_distributor
+#! Pass
+	updatePointDistributor(
+		idDis: ID!
+		idPoint: ID!
+		addPoint: Float
+		delPoint: Float
+		description: String
+	): point_distributor
+#! Pass
+	deletePointDistributor(
+		idPoint: ID!,
+		idDis: ID!
+	): point_distributor
+
+
+
+
+
+#! test
+	addPointStaff(
+		idStaff: ID!
+		addPoint: Float!
+		delPoint: Float!
+		description: String!
+	): point_staff
+#! test
+	updatePointStaff(
+		idStaff: ID!
+		idPoint: ID!
+		addPoint: Float
+		delPoint: Float
+		description: String
+	): point_staff
+#! test
+	deletePointStaff(
+		idPoint: ID!
+		idStaff: ID!
+	): point_staff
+
+
+
+
+
+
+#! Pass
+	addRewardMember(
+		idMem: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float!
+		delPoint: Float!
+	): reward_member
+#! Pass
+	updateRewardMember(
+		idMem: ID!
+		idReward: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float
+		delPoint: Float
+	): reward_member
+#! Pass
+	deleteRewardMember(
+		idReward: ID!
+		idMem: ID!
+	): reward_member
+
+
+
+
+
+
+#! Pass
+	addRewardDistributor(
+		idDis: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float!
+		delPoint: Float!
+	): reward_distributor
+#! Pass
+	updateRewardDistributor(
+		idDis: ID!
+		idReward: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float
+		delPoint: Float
+	): reward_distributor
+#! Pass
+	deleteRewardDistributor(
+		idReward: ID!
+		idDis: ID!
+	): reward_distributor
+
+
+
+
+
+
+#! test
+	addRewardStaff(
+		idStaff: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float!
+		delPoint: Float!
+	): reward_staff
+#! test
+	updateRewardStaff(
+		idStaff: ID!
+		idReward: ID!
+		idRewardPointModel: ID
+		idRewardRankModel: ID
+		addPoint: Float
+		delPoint: Float
+	): reward_staff
+#! test
+	deleteRewardStaff(
+		idStaff: ID!
+		idReward: ID!
+	): reward_staff
 }
 
+#! User
 type User {
 	id: ID!
+	imageUrl: String #รูปโปรไฟล์
 	username: String! #ชื่อผู้ใช้
 	password: String! #รหัสผ่าน
 	fname: String! #ชื่อจริง
@@ -137,15 +755,11 @@ type User {
 	email: String! #อีเมล
 	phone: String #เบอร์มือถือ
 	address: [Address]! #ที่อยู่
-	products: [Product]! #สินค้าของผู้ใช้คนนี้
 	carts: [CartItem]! #ตะกร้าสินค้า
 	authority: String! #สิทธ์ผู้ใช้
 	createdAt: DateTime! #สร้างเมื่อวันที่
+	shops: [Shop]! #ร้านค้าของู้ใช้คนนี้
 }
-
-scalar Date
-scalar DateTime
-
 type Address {
 	id: ID!
 	address: String! #ที่อยู่
@@ -156,12 +770,246 @@ type Address {
 	user: User!
 	createdAt: DateTime!
 }
+#! User
 
+#! Shop
+type Shop {
+	id: ID!
+	profileShop: String #รูปโปรไฟล์ร้านค้า
+	shopName: String! #ชื่อร้านค้า
+	addressShop: AddressShop #ที่อยู่ร้านค้า
+	storeFront: Boolean! #มีหน้าร้านหรือไม่
+	dis_system: Boolean! #มีระบบตัวแทนหรือไม่
+	dis_stock: Boolean! #มีตัวแทนแบบสต็อกสินค้าไหม
+	dis_no_stock: Boolean! #มีตัวแทนแบบไม่สต็อกไหม
+
+	layer_depth: Int #จำนวนชั้นลึก
+	workforce_per_row: Int #จำนวนตัวแทนมากสุดต่อชั้น
+	layer_depth_rewards: [layer_depth_reward]! # ส่วนลดแต่ละชั้น
+
+	rank_distributors: [rank_distributor_model]! #ระดับชั้นตัวแทนจำหน่าย
+	rank_members: [rank_member_model]! #ระดับชั้นตัวแทนจำหน่าย
+	rank_staffs: [rank_staff_model]! #ระดับชั้นพนักงาน
+	point_distributors: [reward_point_distributor_model]! #แต้มตัวแทนจำหน่าย
+	point_members: [reward_point_member_model]! #แต้มสมาชิก
+	point_staffs: [reward_point_staff_model]! #แต้มพนักงาน
+
+	owner: User! #เจ้าของร้าน
+	memberCustomers: [memberCustomer]! #ลูกค้าสมาชิกของร้านค้า
+	distributors: [distributor]! #ตัวแทนจำหน่ายของร้านค้า
+	staffs: [staff]! #พนักงานตามสาขา
+	products: [Product]! #สินค้าของร้านค้านี้
+	createdAt: DateTime! #สร้างร้านค้าเมื่อ
+}
+type layer_depth_reward {
+	id: ID!
+	layer: Int! # ชั้นที่
+	type: String! #ชนิดการลด บาท หรือ เปอร์เซ็น
+	discount: Float! #ส่วนลด
+	shop: Shop! #ร้านที่ layer reward อยู่
+	createdAt: DateTime! #วันที่สร้าง
+}
+type AddressShop {
+	id: ID!
+	address: String! #ที่อยู่
+	sub_area: String! #ตำบล
+	district: String! #อำเภอ
+	province: String! #จังหวัด
+	postal_code: String! #รหัสไปรษณีย์
+	shop: Shop!
+	createdAt: DateTime!
+}
+#! Shop
+
+#! member
+type memberCustomer {
+	id: ID!
+	rank: rank_member_model #ระดับของสมาชิก
+	discount: Float! #ส่วนลดสมาชิก
+	codeCustomer: String! #รหัสประจำตัวสมาชิก
+	data: User! # ข้อมูลสมาชิก
+	shop: Shop! # เป็นสมาชิกของร้านค้าใด
+	point: [point_member]! #ข้อมูลแต้มของสมาชิก
+	reward: [reward_member]! #ข้อมูลรางวัลของสมาชิก
+	createdAt: DateTime! #วันที่เข้าทำงาน
+}
+
+type point_member {
+	id: ID!
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	memberCustomer: User! #เมมเบอร์เจ้าของแต้ม
+	description: String! # หมายเหตุ
+	createdAt: DateTime! #วันที่สร้าง
+}
+
+type reward_member {
+	id: ID!
+	rewardPoint: reward_point_member_model #รางวัลจากการแรกแต้ม
+	rewardRank: rank_member_model #รางวัลจากแรงค์
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	memberCustomer: User! #เมมเบอร์เจ้าของแต้ม
+	createdAt: DateTime! #วันที่สร้าง
+}
+
+type reward_point_member_model {
+	id: ID!
+	condition: String!
+	usePoint: Float!
+	reward: String!
+}
+type rank_member_model {
+	id: ID!
+	no: Int! # ลำดับของโมเดลนี้
+	rank_name: String! #ชื่อแรงค์
+	reward: String! #รางวัล
+	discount: Float! #ส่วนลด
+	condition: String! #เงื่อนไขการเป็นแรงค์นี้
+	treatment: String! #เงื่อนไขการรักษาแรงค์นี้
+}
+#! member
+
+#! distributor
+type distributor {
+	id: ID!
+	# layer_depth: layer_depth_reward! #ระดับชั้นความลึก
+	rank: rank_distributor_model! #ระดับของตัวแทน
+	discount: Float! #ส่วนลดตัวแทน
+	codeDistributor: String! #รหัสประจำตัวตัวแทน
+	data: User! #ข้อมูลตัวแทน
+	shop: Shop! # เป็นสมาชิกของร้านค้าใด
+	point: [point_distributor]! #ข้อมูลแต้มของตัวแทน
+	reward: [reward_distributor]! #ข้อมูลรางวัลของตัวแทน
+	supervisor: User! #หัวหน้าข่ายของคนนี้
+	distributors: [distributor]! #ตัวแทนจำหน่ายของตัวแทนคนนี้
+	createdAt: DateTime! #วันที่เข้าทำงาน
+}
+type point_distributor {
+	id: ID!
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	distributor: User! #เมมเบอร์เจ้าของแต้ม
+	description: String! # หมายเหตุ
+	createdAt: DateTime! #วันที่สร้าง
+}
+type reward_distributor {
+	id: ID!
+	rewardPoint: reward_point_distributor_model #รางวัลจากการแรกแต้ม
+	rewardRank: rank_distributor_model #รางวัลจากแรงค์
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	distributor: User! #เมมเบอร์เจ้าของแต้ม
+	createdAt: DateTime! #วันที่สร้าง
+}
+type reward_point_distributor_model {
+	id: ID!
+	condition: String!
+	usePoint: Float!
+	reward: String!
+}
+
+type rank_distributor_model {
+	id: ID!
+	icon: String
+	no: Int! # ลำดับของโมเดลนี้
+	rank_name: String! #ชื่อแรงค์
+	reward: [reward_rank_dis_model]! #รางวัล
+	discount: Float! #ส่วนลด
+	condition: [condition_rank_dis_model]! #เงื่อนไขการเป็นแรงค์นี้
+	treatment: [treatment_rank_dis_model]! #เงื่อนไขการรักษาแรงค์นี้
+	color: String! #สีประจำระดับ
+}
+type reward_rank_dis_model {
+	id: ID!
+	img: String
+	reward: String! #ข้อมูลรางวัล
+	createdAt: DateTime! #วันที่สร้าง
+}
+type condition_rank_dis_model {
+	id: ID!
+	img: String
+	condition: String! #ข้อมูลเงื่อนไข
+	createdAt: DateTime! #วันที่สร้าง
+}
+type treatment_rank_dis_model {
+	id: ID!
+	img: String
+	treatment: String! #ข้อมูลการรักษาแรงค์
+	createdAt: DateTime! #วันที่สร้าง
+}
+#! distributor
+
+#! staff
+type staff {
+	id: ID!
+	rank: rank_staff_model! #ระดับของพนักงาน
+	wages: Float! # ค่าจ้าง
+	employmentPattern: String! #รูปแบบการจ่ายเงิน 'รายชั่วโมง''รายวัน''รายสัปดาห์''รายเดือน'
+	workSchedules: [WorkSchedule]! #ข้อมูลเเข้า-ออกงาน
+	discount: Float! #ส่วนลดพนักงาน
+	codeStaff: String! #รหัสประจำตัวพนักงาน
+	data: User! #ข้อมูลพนักงาน
+	# shop: Shop! # เป็นสมาชิกของร้านค้าใด
+	point: [point_staff]! #ข้อมูลแต้มของพนักงาน
+	reward: [reward_staff]! #ข้อมูลรางวัลของพนักงาน
+	branch: Shop! #สาขาที่ประจำอยู่ของพนักงาน
+	createdAt: DateTime! #วันที่เข้าทำงาน
+}
+type WorkSchedule {
+	id: ID!
+	rank: rank_staff_model! # ตำแหน่งงาน
+	checkIn: DateTime # เวลาเข้าทำงาน
+	checkOut: DateTime # เวลา่ออกงาน
+	wages: Float! # เงินค่าจ้าง
+	employmentPattern: String! # รูปแบบการจ่ายเงินของวันนี้
+	totalWagesToDay: Float # เงินค่าจ้างทั้งหมดวันนี้
+	user: User! # เจ้าของตารางนี้
+	createdAt: DateTime
+}
+type point_staff {
+	id: ID!
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	staff: User! #เมมเบอร์เจ้าของแต้ม
+	description: String! # หมายเหตุ
+	createdAt: DateTime! #วันที่สร้าง
+}
+type reward_staff {
+	id: ID!
+	rewardPoint: reward_point_staff_model #รางวัลจากการแรกแต้ม
+	rewardRank: rank_staff_model #รางวัลจากแรงค์
+	addPoint: Float! #แต้มที่ได้รับ
+	delPoint: Float! #แต้มที่ลบไป
+	staff: User! # สตาฟเจ้าของแต้ม
+	createdAt: DateTime! #วันที่สร้าง
+}
+type reward_point_staff_model {
+	id: ID!
+	condition: String!
+	usePoint: Float!
+	reward: String!
+}
+type rank_staff_model {
+	id: ID!
+	no: Int! # ลำดับของโมเดลนี้
+	rank_name: String! #ชื่อแรงค์
+	reward: String! #รางวัล
+	discount: Float! #ส่วนลด
+	condition: String! #เงื่อนไขการเป็นแรงค์นี้
+	treatment: String! #เงื่อนไขการรักษาแรงค์นี้
+}
+#! staff
+
+scalar Date
+scalar DateTime
+
+#! Product
 type Product {
 	id: ID!
 	name: String! #ชื่อสินค้า
 	type: [ProductType]! #หมวดหมู่สินค้า
-	description: String! #รายละเอียดสินค้า
+	description: String	 #รายละเอียดสินค้า
 	imageUrl: [ImageUrl]! #รูปภาพสินค้า
 	price: Float! #ราคาเต็ม
 	min_of_stock: Float! #สต๊อกขั้นต่ำ
@@ -174,17 +1022,19 @@ type Product {
 	num_put_basket_now: Int #จำนวนที่อยู่ในตะกร้าตอนนี้
 	num_put_basket: Int #จำนวนที่เคยถูกใส่ในตะกร้า
 	traffic: [Traffic]! #จำนวนการเข้าชม
-	user: User! #เจ้าของสินค้านี้
+	user: User! #ผู้รับสินค้านี้มา
 	status_show: [StatusShow]! #สถานะว่า product นี้มีขาย หมดสต็อก หรือเลิกจำหน่าย
 	status_product: [StatusProduct]! #สถานะว่า product นี้ขายดี สินค้าแนะนำ และอื่นๆ
 	mem_point: Int #แต้มสะสมสมาชิก
 	dis_point: Int #แต้มสะสม ตัวแทน
 	productWholeSale: [ProductWholeSale]! # ราคาขายส่ง
 	SKU: String # รหัส SKU ของสินค้านี้
-	ParentSKU: String # รหัส SKU ของสินค้านี้
+	ParentSKU: String! # รหัส SKU ของสินค้านี้
+	owner: User! #เจ้าของที่สร้างสินค้านี้
+	shops: [Shop]! #เป็นสินค้าของ shop ใด
+	pickUpFrom: User! #รับสินค้าต่อมาจาก
 	createdAt: DateTime! #สร้างเมื่อ
 }
-
 type ProductWholeSale {
 	id: ID!
 	price: Float!
@@ -193,13 +1043,36 @@ type ProductWholeSale {
 	product: Product!
 	createdAt: DateTime!
 }
-
 type ProductType {
 	id: ID!
 	type: String!
 	product: Product!
 	createdAt: DateTime!
 }
+type StatusProduct {
+	id: ID!
+	status: String! #สถานะ สินค้าขายดี สินค้าแนะนำ สินค้ามาใหม่
+	product: Product!
+	createdAt: DateTime!
+}
+type StatusShow {
+	id: ID!
+	status: String! #สถานะ กำลังจัดจำหน่าย สินค้าหมดสต็อก เลิกจำหน่าย
+	product: Product!
+	createdAt: DateTime!
+}
+type ImageUrl {
+	id: ID!
+	imageUrl: String!
+	product: Product!
+	createdAt: DateTime!
+}
+type Traffic {
+	product: Product!
+	createdAt: DateTime!
+}
+
+
 
 type Stock {
 	id: ID!
@@ -212,7 +1085,6 @@ type Stock {
 	product: Product!
 	createdAt: DateTime!
 }
-
 type StockEdit {
 	id: ID!
 	stockEdit: Float!
@@ -223,34 +1095,9 @@ type StockEdit {
 	stock: Stock!
 	createdAt: DateTime!
 }
+#! Product
 
-type StatusProduct {
-	id: ID!
-	status: String! #สถานะ สินค้าขายดี สินค้าแนะนำ สินค้ามาใหม่
-	product: Product!
-	createdAt: DateTime!
-}
-
-type StatusShow {
-	id: ID!
-	status: String! #สถานะ กำลังจัดจำหน่าย สินค้าหมดสต็อก เลิกจำหน่าย
-	product: Product!
-	createdAt: DateTime!
-}
-
-type ImageUrl {
-	id: ID!
-	imageUrl: String!
-	product: Product!
-	createdAt: DateTime!
-}
-
-type Traffic {
-	id: ID!
-	product: Product!
-	createdAt: DateTime!
-}
-
+#! CartItem
 type CartItem {
 	id: ID!
 	product: Product! #สินค้าที่อยู่ในตะกร้า
@@ -258,8 +1105,11 @@ type CartItem {
 	user: User! #ผู้ใช้ทีเป็นเจ้าของตะกร้า
 	createdAt: DateTime! #สร้างเมื่อวันที่
 }
+#! CartItem
 
+#! AuthData
 type AuthData {
 	user: User
 	jwt: String
 }
+#! AuthData

@@ -12,14 +12,12 @@ const productSchema = mongoose.Schema({
 		}
 	],
 	description: {
-		type: String,
-		required: true
+		type: String
 	},
 	imageUrl: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'ImageUrl',
-			required: true
+			ref: 'ImageUrl'
 		}
 	],
 	price: {
@@ -33,8 +31,7 @@ const productSchema = mongoose.Schema({
 	num_of_stock: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Stock',
-			required: true
+			ref: 'Stock'
 		}
 	],
 	discountType: {
@@ -108,6 +105,22 @@ const productSchema = mongoose.Schema({
 	},
 	ParentSKU: {
 		type: String,
+		required: true
+	},
+	owner: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
+	},
+	shops: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Shop'
+		}
+	],
+	pickUpFrom: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
 		required: true
 	},
 	createdAt: {
